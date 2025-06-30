@@ -1,16 +1,18 @@
 package org.scoula.security.account.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.Date;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class MemberVO {
+
     private String username;
     private String password;
     private String email;
