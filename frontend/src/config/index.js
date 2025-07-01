@@ -20,7 +20,7 @@ export default {
       icon: 'fa-regular fa-images',
     },
   ],
-  accoutMenus: {
+  accountMenus: {
     // 인증 관련메뉴정보
     login: {
       url: '/auth/login',

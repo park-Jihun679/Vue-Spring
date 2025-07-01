@@ -5,13 +5,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public class UploadFiles {
+
     /*
     baseDir : 기본 저장 디렉토리
     part : 업로드된 파일 객체
@@ -41,11 +44,14 @@ public class UploadFiles {
 
     /**
      * 파일 크기를 사용자 친화적 형태로 변환
+     *
      * @param size 바이트 단위 파일 크기
      * @return 포맷된 문자열 (예: 1.2 MB)
      */
     public static String getFormatSize(Long size) {
-        if (size <= 0) return "0";
+        if (size <= 0) {
+            return "0";
+        }
 
         final String[] units = new String[]{"Bytes", "KB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
@@ -56,9 +62,10 @@ public class UploadFiles {
 
     /**
      * 파일 다운로드 처리
+     *
      * @param response HTTP 응답 객체
-     * @param file 다운로드할 파일
-     * @param orgName 원본 파일명 (다운로드 시 표시될 이름)
+     * @param file     다운로드할 파일
+     * @param orgName  원본 파일명 (다운로드 시 표시될 이름)
      * @throws Exception
      */
     public static void download(HttpServletResponse response, File file, String orgName)
@@ -71,16 +78,13 @@ public class UploadFiles {
         // - 브라우저가 미리보기를 시도하지 않고 다운로드 시도
         response.setContentType("application/download");
 
-
         // Content-Length
         // - 브라우저에게 전송될 데이터의 크기를 미리 알려주는 중요 응답 헤더
         // - 다운로드 진행율 표시 가능, 연결 최적화(HTTP Keep-Alive), 브라우저 메모리 최적화
         response.setContentLength((int) file.length());
 
-
         // 한글 파일명 인코딩 (UTF-8)
-        String filename = URLEncoder.encode(orgName, "UTF-8");
-
+        String filename = URLEncoder.encode(orgName, StandardCharsets.UTF_8);
 
         // Content-disposition
         // - 브라우저가 응답을 어떻게 처리하지 지정하는 HTTP 헤더
@@ -95,6 +99,24 @@ public class UploadFiles {
             BufferedOutputStream bos = new BufferedOutputStream(os)) {
 
             Files.copy(Paths.get(file.getPath()), bos);
+        }
+    }
+
+    public static void downloadImage(HttpServletResponse response, File file) {
+        try {
+            Path path = Path.of(file.getPath());
+            String mimeType = Files.probeContentType(path);        // MIME 타입 자동 감지
+
+            response.setContentType(mimeType);                     // Content-Type 설정
+            response.setContentLength((int) file.length());        // Content-Length 설정
+
+            // 파일을 응답 스트림으로 복사
+            try (OutputStream os = response.getOutputStream();
+                BufferedOutputStream bos = new BufferedOutputStream(os)) {
+                Files.copy(path, bos);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

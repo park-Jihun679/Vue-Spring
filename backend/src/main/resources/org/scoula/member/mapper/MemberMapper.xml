@@ -25,7 +25,7 @@
     <result column="email" property="email"/>
     <result column="reg_date" property="regDate"/>
     <result column="update_date" property="updateDate"/>
-    <result column="username" property="username"/>
+    <collection property="authList" resultMap="authMap"/>
   </resultMap>
 
   <select id="get" resultMap="memberMap">
@@ -41,4 +41,18 @@
     FROM tbl_member
     WHERE username = #{username}
   </select>
+
+  <update id="update">
+    UPDATE tbl_member
+    SET email       = #{email},
+        update_date = now()
+    WHERE username = #{username}
+  </update>
+
+  <update id="updatePassword">
+    UPDATE tbl_member
+    SET password    = #{newPassword},
+        update_date = now()
+    WHERE username = #{username}
+  </update>
 </mapper>
