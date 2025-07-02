@@ -14,4 +14,9 @@ export default [
     name: 'board/detail',
     component: () => import('../pages/board/BoardDetailPage.vue'),
   },
+  {
+    path: '/board/update/:no',
+    name: 'board/update',
+    component: () => import('../pages/board/BoardUpdatePage.vue'),
+  },
 ];
