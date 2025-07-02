@@ -1,9 +1,5 @@
 package org.scoula.board.service;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.board.domain.BoardAttachmentVO;
@@ -14,6 +10,11 @@ import org.scoula.common.util.UploadFiles;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -33,7 +34,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardDTO get(Long no) {
         BoardVO vo = Optional.ofNullable(mapper.get(no))
-            .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NoSuchElementException::new);
         return BoardDTO.of(vo);
     }
 
@@ -61,6 +62,12 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardDTO update(BoardDTO board) {
         mapper.update(board.toVo());
+
+        // 파일 업로드 처리
+        List<MultipartFile> files = board.getFiles();
+        if (files != null && !files.isEmpty()) {
+            upload(board.getNo(), files);
+        }
         return get(board.getNo());
     }
 
@@ -88,7 +95,8 @@ public class BoardServiceImpl implements BoardService {
 
     /**
      * 파일 업로드 처리 (private 메서드)
-     * @param bno 게시글 번호
+     *
+     * @param bno   게시글 번호
      * @param files 업로드할 파일 목록
      */
     private void upload(Long bno, List<MultipartFile> files) {
