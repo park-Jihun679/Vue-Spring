@@ -6,6 +6,8 @@ import org.scoula.board.domain.BoardAttachmentVO;
 import org.scoula.board.domain.BoardVO;
 import org.scoula.board.dto.BoardDTO;
 import org.scoula.board.mapper.BoardMapper;
+import org.scoula.common.pagination.Page;
+import org.scoula.common.pagination.PageRequest;
 import org.scoula.common.util.UploadFiles;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,17 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardDTO> getList() {
         return mapper.getList().stream().map(BoardDTO::of).toList();
     }
+
+    @Override
+    public Page<BoardDTO> getPage(PageRequest pageRequest) {
+
+        List<BoardVO> boards = mapper.getPage(pageRequest);
+        int totalCount = mapper.getTotalCount();
+
+        return Page.of(pageRequest, totalCount,
+                boards.stream().map(BoardDTO::of).toList());
+    }
+
 
     @Override
     public BoardDTO get(Long no) {

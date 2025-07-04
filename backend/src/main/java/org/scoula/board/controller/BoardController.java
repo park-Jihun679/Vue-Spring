@@ -7,13 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.scoula.board.domain.BoardAttachmentVO;
 import org.scoula.board.dto.BoardDTO;
 import org.scoula.board.service.BoardService;
+import org.scoula.common.pagination.Page;
+import org.scoula.common.pagination.PageRequest;
 import org.scoula.common.util.UploadFiles;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.List;
 
 @RestController                    // REST API 컨트롤러 선언 (@Controller + @ResponseBody)
 @RequestMapping("/api/board")   // 기본 URL 매핑
@@ -43,12 +44,20 @@ public class BoardController {
             @ApiResponse(code = 400, message = "잘못된 요청입니다."),
             @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
     })
+
+    /*  page 적용 이전 list 조회
     @GetMapping("")
     public ResponseEntity<List<BoardDTO>> getList() {
         log.info("============> 게시글 전체 목록 조회");
 
         List<BoardDTO> list = service.getList();
         return ResponseEntity.ok(list); // 200 OK + 데이터 반환
+    }
+     */
+
+    @GetMapping("")
+    public ResponseEntity<Page> getList(PageRequest pageRequest) {
+        return ResponseEntity.ok(service.getPage(pageRequest));
     }
 
     /**

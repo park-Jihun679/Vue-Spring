@@ -1,8 +1,10 @@
 package org.scoula.board.mapper;
 
-import java.util.List;
 import org.scoula.board.domain.BoardAttachmentVO;
 import org.scoula.board.domain.BoardVO;
+import org.scoula.common.pagination.PageRequest;
+
+import java.util.List;
 
 public interface BoardMapper {
 
@@ -30,4 +32,7 @@ public interface BoardMapper {
     // 특정 첨부 파일 1개 삭제
     int deleteAttachment(Long no);
 
+    int getTotalCount();
+
+    List<BoardVO> getPage(PageRequest pageRequest);
 }

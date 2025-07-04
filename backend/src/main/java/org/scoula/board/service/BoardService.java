@@ -1,12 +1,17 @@
 package org.scoula.board.service;
 
-import java.util.List;
 import org.scoula.board.domain.BoardAttachmentVO;
 import org.scoula.board.dto.BoardDTO;
+import org.scoula.common.pagination.Page;
+import org.scoula.common.pagination.PageRequest;
+
+import java.util.List;
 
 public interface BoardService {
 
     List<BoardDTO> getList();
+
+    Page<BoardDTO> getPage(PageRequest pageRequest);
 
     BoardDTO get(Long no);
 
@@ -21,4 +26,5 @@ public interface BoardService {
     BoardAttachmentVO getAttachment(Long no);
 
     boolean deleteAttachment(Long no);
+
 }
