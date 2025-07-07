@@ -2,7 +2,6 @@ package org.scoula.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import javax.sql.DataSource;
 import lombok.extern.log4j.Log4j2;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -17,10 +16,18 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.sql.DataSource;
+
 @Configuration
 @PropertySource({"classpath:/application.properties"})
-@MapperScan(basePackages = {"org.scoula.board.mapper", "org.scoula.member.mapper"})
-@ComponentScan(basePackages = {"org.scoula.board.service", "org.scoula.member.service"})
+@MapperScan(basePackages = {"org.scoula.board.mapper",
+        "org.scoula.member.mapper",
+        "org.scoula.travel.mapper"
+})
+@ComponentScan(basePackages = {"org.scoula.board.service",
+        "org.scoula.member.service",
+        "org.scoula.travel.service"
+})
 @Log4j2
 @EnableTransactionManagement
 public class RootConfig {
@@ -53,7 +60,7 @@ public class RootConfig {
     public SqlSessionFactory sqlSessionFactory() throws Exception {
         SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
         sqlSessionFactory.setConfigLocation(
-            applicationContext.getResource("classpath:/mybatis-config.xml"));
+                applicationContext.getResource("classpath:/mybatis-config.xml"));
         sqlSessionFactory.setDataSource(dataSource());
 
         return sqlSessionFactory.getObject();
